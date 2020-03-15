@@ -1,0 +1,19 @@
+{
+  "name": "spotify",
+  "version": "1.0.0",
+  "description": "create app spotify with NodeJs / Angular and Mongodb",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KatzoA/My-Spotify.git"
+  },
+  "author": "Orkatz ARANO",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KatzoA/My-Spotify/issues"
+  },
+  "homepage": "https://github.com/KatzoA/My-Spotify#readme"
+}
