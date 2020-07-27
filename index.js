@@ -1,11 +1,18 @@
 'use strict'
 
 const mongoose = require('mongoose');
+const { MongoClient } = require("mongodb");
+const app = require('./app');
+const port = process.env.port || 5000
 
-mongoose.connect('mogodb://localhost:27017/spotify', (err,res) => {
+
+mongoose.connect("mongodb://localhost:27018/spotify", { useNewUrlParser: true,useUnifiedTopology: true }, (err, res )=> {
     if(err){
         throw err
     }else {
-        console.log("Database connected");
+        app.listen(port, () => {
+            console.log('Serveur OK')
+        })
     }
-});
+
+})
