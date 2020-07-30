@@ -108,9 +108,52 @@ function updateUser(req, res){
     });
 }
 
+// Upload archives Method
+function uploadImage(req, res){
+    var userId = req.params.id;
+    var file_name = 'Not uploaded';
+
+    // If theres existing data through files
+    if(req.files){
+        // Get file's path
+        var file_path = req.files.image.path;
+        // Cut file's path
+        var file_split = file_path.split('\\');
+        // Separate path into an array
+        var file_name = file_split[2];
+
+        // Verify if it is an image
+        var ext_split = file_name.split('\.');
+        var file_ext = ext_split[1];
+
+        if(file_ext == 'png' || file_ext == 'jpg' || file_ext == 'gif'){
+            // add image path to DB
+            User.findByIdAndUpdate(userId, {image:file_name}, (err, userUpdated) =>{
+                if(err){
+                    res.status(500).send({message:"Server Error: Error updating image"});
+                }else{
+                    if(!userUpdated){
+                        res.status(404).send({message:"Image cannot be uploaded"})
+                    }else{
+                        res.status(200).send({image: file_name, user:userUpdated});
+                    }
+                }
+            });
+        }else{
+            res.status(200).send({message:"Image format not valid"});
+        }
+
+        //console.log(file_split);
+        //res.status(200).send({message:file_path});
+    }else{
+        res.status(200).send({message:"Image not uploaded"});
+    }
+}
+
 module.exports = {
     test,
     saveUser,
     loginUser,
-    updateUser
+    updateUser,
+    uploadImage
 };
