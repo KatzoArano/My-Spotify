@@ -3,6 +3,8 @@
 const bcrypt = require('bcrypt-nodejs');
 const User = require('../models/user'); 
 const jwt = require('../services/jwt');
+const fs = require('fs');
+const path = require('path');
 
 function test(req, res){
     res.status(200).send({
@@ -150,10 +152,25 @@ function uploadImage(req, res){
     }
 }
 
+function getImageFile(req, res){
+    const imageFile = req.params.imageFile;
+    const path_file = './uploads/users/'+imageFile
+
+    fs.exists('./uploads/users/'+imageFile, function(exists){
+        if(exists){
+            res.sendFile(path.resolve(path_file))
+        }else{
+            res.status(200).send({message:"Image not exists"}); 
+        }
+
+    })
+}
+
 module.exports = {
     test,
     saveUser,
     loginUser,
     updateUser,
-    uploadImage
+    uploadImage,
+    getImageFile
 };
