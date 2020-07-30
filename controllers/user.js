@@ -81,8 +81,36 @@ function loginUser(req, res){
     })
 }
 
+// Update User Method
+function updateUser(req, res){
+    // Get ID from URL
+    var userId = req.params.id;
+    // Get body from POST
+    var update = req.body;
+
+    if(userId != req.user.sub){
+        return res.status(500).send({message:"Forbidden action"});
+    }
+
+    // Update user
+    // Receives userid from URL and the body's object
+    // Return an error or the updated user if everyhting is correct through arrow callback
+    User.findByIdAndUpdate(userId, update, (err, userUpdated) =>{
+        if(err){
+            res.status(500).send({message:"Error updating user"});
+        }else{
+            if(!userUpdated){
+                res.status(404).send({message:"User cannot be updated"});
+            }else{
+                res.status(200).send({user:userUpdated});
+            }
+        }
+    });
+}
+
 module.exports = {
     test,
     saveUser,
-    loginUser
+    loginUser,
+    updateUser
 };
