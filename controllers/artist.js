@@ -3,6 +3,7 @@
 // upload && save image
 const fs = require('fs');
 const path = require('path');
+const mongoosePaginate = require('mongoose-pagination')
 
 const Artist = require('../models/artist');
 const Album = require('../models/album');
@@ -50,9 +51,34 @@ function getArtist(req,res){
    })
 }
 
+function getAllArtists(req, res){
+    if(req.params.page){
+         var page = req.params.page;
+    }else{
+        var page = 1;
+    }
+    var itemsPerPage = 3;
+
+    Artist.find().sort('name').paginate(page, itemsPerPage, (err, artists, total) => {
+        if(err){
+            res.status(500).send({message: "Erreur requete"})
+        }else{
+            if(!artists){
+                res.status(404).send({message: "Aucun artistes"})
+            }else{
+                return res.status(200).send({
+                    total_items: total,
+                    artists: artists
+                })
+            }
+        }
+    })
+}
+
 
 module.exports = {
     testArtist,
     saveArtist,
-    getArtist
+    getArtist,
+    getAllArtists
 }
