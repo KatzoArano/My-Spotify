@@ -61,10 +61,10 @@ function getAllArtists(req, res){
 
     Artist.find().sort('name').paginate(page, itemsPerPage, (err, artists, total) => {
         if(err){
-            res.status(500).send({message: "Erreur requete"})
+            res.status(500).send({message: "Erreur requete"});
         }else{
             if(!artists){
-                res.status(404).send({message: "Aucun artistes"})
+                res.status(404).send({message: "Aucun artistes"});
             }else{
                 return res.status(200).send({
                     total_items: total,
@@ -75,10 +75,27 @@ function getAllArtists(req, res){
     })
 }
 
+function updateArtist(req, res){
+    var artistId = req.params.id;
+    var update = req.body;
+
+    Artist.findByIdAndUpdate(artistId, update, (err, artistUpdated) => {
+        if(err){
+            res.status(500).send({message: "Erreur requete"});
+        }else{
+            if(!artistUpdated){
+                res.status(404).send({message: "Artiste non actualiser"})
+            }
+            res.status(200).send({artist: artistUpdated})
+        }
+    })
+}
+
 
 module.exports = {
     testArtist,
     saveArtist,
     getArtist,
-    getAllArtists
+    getAllArtists,
+    updateArtist
 }
