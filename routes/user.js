@@ -1,5 +1,6 @@
 const express = require('express');
 const userCtrl = require('../controllers/user');
+const artistCtrl = require('../controllers/artist');
 const md_auth = require('../middelwares/authenticated');
 
 const api = express.Router();
@@ -13,5 +14,7 @@ api.post('/login', userCtrl.loginUser);
 api.put('/update-user/:id', md_auth.validationAuth, userCtrl.updateUser);
 api.post('/upload-image-user/:id', [md_auth.validationAuth, md_upload], userCtrl.uploadImage);
 api.get('/get-image-user/:imageFile', userCtrl.getImageFile);
+
+
 
 module.exports = api;
