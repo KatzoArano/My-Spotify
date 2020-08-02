@@ -91,11 +91,55 @@ function updateArtist(req, res){
     })
 }
 
+function deleteArtist(req, res){
+    var artistId = req.params.id;
+
+    Artists.findByIdAndDelete(artistId, (err, artistRemoved) => {
+        if(err){
+            res.status(500).send({message:"Server error"});
+        }else{
+            if(!artistRemoved){
+                res.status(404).send({message:"Artist wasn't deleted"});
+            }else{
+                // ---- DELETE ON CASCADE -----
+
+                //res.status(404).send({artistRemoved});
+                // Delete all albums
+                Album.find({artist: artistRemoved._id}).deleteOne((err, albumRemoved)=>{
+                    if(err){
+                        res.status(500).send({message:"Album cannot be deleted"});
+                    }else{
+                        if(!albumRemoved){
+                            res.status(404).send({message:"Album wasn't deleted"});
+                        }else{
+                            //res.status(404).send({message: "Album removed"});
+                            // Delete all songs
+                            Song.find({album: albumRemoved._id}).deleteOne((err, songRemoved) =>{
+                                if(err){
+                                    res.status(500).send({message:"Song cannot be deleted"});
+                                }else{
+                                    if(!songRemoved){
+                                        res.status(404).send({message:"Song wasn't deleted"});
+                                    }else{
+                                        res.status(200).send({artist: artistRemoved});
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        }
+    });
+}
+
+
 
 module.exports = {
     testArtist,
     saveArtist,
     getArtist,
     getAllArtists,
-    updateArtist
+    updateArtist,
+    deleteArtist
 }
