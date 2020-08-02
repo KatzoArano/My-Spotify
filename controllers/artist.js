@@ -12,5 +12,30 @@ function getArtist(req,res){
     res.status(200).send({message: "Controllador artist Ok"})
 }
 
+function saveArtist(req, res){
+    var artist = new Artist();
 
-module.exports = {getArtist}
+    var params = req.body;
+    artist.name = params.name;
+    artist.description = params.description;
+    artist.image = 'null';
+    artist.style = params.style;
+
+    artist.save((err, artistStored) => {
+        if(err){
+            res.status(500).send({message: "Error en sauvegardant artiste"})
+        }else{
+            if(!artistStored){
+                res.status(404).send({message: "Artiste non enregistre"})
+            }else{
+                res.status(200).send({artist: artistStored })
+            }
+        }
+    })
+}
+
+
+module.exports = {
+    getArtist,
+    saveArtist
+}
