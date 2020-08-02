@@ -8,7 +8,7 @@ const Artist = require('../models/artist');
 const Album = require('../models/album');
 const Song = require('../models/song');
 
-function getArtist(req,res){
+function testArtist(req,res){
     res.status(200).send({message: "Controllador artist Ok"})
 }
 
@@ -34,8 +34,25 @@ function saveArtist(req, res){
     })
 }
 
+function getArtist(req,res){
+    var artistId = req.params.id;
+
+   Artist.findById(artistId, (err, artist) => {
+    if(err){
+        res.status(500).send({message: "Erreur requete"})
+    }else{
+        if(!artist){
+            res.status(404).send({message: "Artiste non existant"})
+        }else{
+            res.status(200).send({artist})
+        }
+    }
+   })
+}
+
 
 module.exports = {
-    getArtist,
-    saveArtist
+    testArtist,
+    saveArtist,
+    getArtist
 }
