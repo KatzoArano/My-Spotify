@@ -35,7 +35,23 @@ function saveAlbum(req, res){
     });
 }
 
+function getAlbum(req, res){
+    var albumId = req.params.id;
+
+    Album.findById(albumId).populate({path: 'artist'}).exec((err, album) => {
+        if(err){
+            res.status(500).send({message: 'Server error'});
+        }else{
+            if(!album){
+                res.status(404).send({message: 'Album not exist'});
+            }
+            res.status(200).send({album});
+        }
+    })
+}
+
 module.exports = {
     testAlbum,
-    saveAlbum
+    saveAlbum,
+    getAlbum
 }
