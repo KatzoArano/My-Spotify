@@ -10,5 +10,7 @@ api.get('/artist/:id', md_auth.validationAuth, artistCtrl.getArtist);
 api.get('/artists/:page?', md_auth.validationAuth, artistCtrl.getAllArtists);
 api.put('/artist/:id', md_auth.validationAuth, artistCtrl.updateArtist);
 api.delete('/artist/:id', md_auth.validationAuth, artistCtrl.deleteArtist);
+api.get('/get-image-artist/:imageFile', artistCtrl.getImageFile);
+
 
 module.exports = api;

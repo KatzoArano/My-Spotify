@@ -133,6 +133,23 @@ function deleteArtist(req, res){
     });
 }
 
+function getImageFile(req, res){
+    // Get image file from POST
+    var imageFile = req.params.imageFile;
+
+    var path_file = './uploads/artists/'+imageFile;
+
+    // Verify if file exists
+    fs.exists(path_file, function(exists){
+        // Verify if callback's param is correct
+        if(exists){
+            res.sendFile(path.resolve(path_file));
+        }else{
+            res.status(404).send({message:"Image not found"});
+        }
+    });
+}
+
 
 
 module.exports = {
@@ -141,5 +158,6 @@ module.exports = {
     getArtist,
     getAllArtists,
     updateArtist,
-    deleteArtist
+    deleteArtist,
+    getImageFile
 }
