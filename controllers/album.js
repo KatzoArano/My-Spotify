@@ -50,8 +50,80 @@ function getAlbum(req, res){
     })
 }
 
+function getAlbums(req, res){
+    var artistId= req.params.artist;
+
+    if(!artistId){
+        // Get all albums
+        var find = Album.find().sort('title');
+    }else{
+        // Get all artist's albums
+        var find = Album.find({artist: artistId}).sort('year');
+    }
+
+    find.populate({path: 'artist'}).exec((err, albums)=>{
+        if(err){
+            res.status(500).send({message: "Server error"});
+        }else{
+            if(!albums){
+                res.status(404).send({message: "This artist has no albums"});
+            }else{
+                res.status(200).send({albums});
+            }
+        }
+    });
+}
+
+function updateAlbum(req, res){
+    var albumId = req.params.id;
+    var update = req.body;
+
+    Album.findByIdAndUpdate(albumId, update, (err, albumUpdated)=>{
+        if(err){
+            res.status(500).send({message: 'Server Error'});
+        }else{
+            if(!albumUpdated){
+                res.status(404).send({message: 'Album cannot be updated'});
+            }else{
+                res.status(200).send({album: albumUpdated});
+            }
+        }
+    });
+}
+
+function deleteAlbum(req, res){
+    var albumId = req.params.id;
+
+    Album.findByIdAndRemove(albumId, (err, albumRemoved)=>{
+        if(err){
+            res.status(500).send({message:"Album cannot be deleted"});
+        }else{
+            if(!albumRemoved){
+                res.status(404).send({message:"Album wasn't deleted"});
+            }else{
+                //res.status(404).send({message: "Album removed"});
+                // Delete all songs
+                Song.find({album: albumRemoved._id}).deleteOne((err, songRemoved) =>{
+                    if(err){
+                        res.status(500).send({message:"Server Error"});
+                    }else{
+                        if(!songRemoved){
+                            res.status(404).send({message:"Song wasn't deleted"});
+                        }else{
+                            res.status(200).send({album: albumRemoved});
+                        }
+                    }
+                });
+            }
+        }
+    });
+}
+
 module.exports = {
     testAlbum,
     saveAlbum,
-    getAlbum
+    getAlbum,
+    getAlbums,
+    updateAlbum,
+    deleteAlbum
 }
